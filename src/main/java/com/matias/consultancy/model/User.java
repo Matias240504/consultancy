@@ -13,10 +13,10 @@ public class User {
     public User(int id, String nombre, String apellido, String email, String phone, String direccion, String password, int roleId){
             this.id = id;
             this.nombre = nombre;
+            this.apellido = apellido;
             this.email = email;
             this.phone = phone;
             this.direccion = direccion;
-            this.password = password;
             this.password = password;
             this.roleId = roleId;
     }

@@ -12,29 +12,24 @@ import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JTextField;
 
-import com.matias.consultancy.controller.LoginController;
 import com.matias.consultancy.controller.UserController;
 import com.matias.consultancy.model.User;
 import com.matias.consultancy.model.UserDAO;
 
-public class UserView extends JFrame {
+public class EditUserView extends JFrame {
     private User user;
     private UserDAO userDAO;
     private JTextField nombreJTF, apellidoJTF, phoneJTF, direccionJTF;
-    private JButton btnguardar, logoutbtn;
+    private JButton btnguardar;
     private UserController userController;
-    private LoginController loginController;
 
-    public UserView(User user, UserController userController, LoginController loginController) { 
-        this.user = user;
+    // Constructor que recibe un usuario
+    public EditUserView(User user, UserDAO userDAO) {
+        this.user = user; // Asignamos el usuario recibido
+        this.userDAO = userDAO; // Inicializamos UserDAO
         this.userController = userController;
-        this.loginController = loginController;
-        this.userDAO = new UserDAO();
-        initComponents();
-    }
 
-    private void initComponents() {
-        setTitle("Mi perfil");
+        setTitle("Editar Usuario");
         setSize(300, 300);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLocationRelativeTo(null);
@@ -45,7 +40,7 @@ public class UserView extends JFrame {
         gbc.fill = GridBagConstraints.HORIZONTAL;
 
         // Título
-        JLabel tituloLabel = new JLabel("Datos", JLabel.CENTER);
+        JLabel tituloLabel = new JLabel("Editar Datos", JLabel.CENTER);
         tituloLabel.setFont(new Font("Arial", Font.BOLD, 18));
         gbc.gridx = 0;
         gbc.gridy = 0;
@@ -58,48 +53,48 @@ public class UserView extends JFrame {
         gbc.anchor = GridBagConstraints.LINE_END;
         gbc.gridx = 0;
         gbc.gridy = 1;
-        add(new JLabel("Ingrese Nombre:"), gbc);
-        
+        add(new JLabel("Nombre:"), gbc);
+
         gbc.gridx = 1;
         gbc.anchor = GridBagConstraints.LINE_START;
         nombreJTF = new JTextField(10);
-        nombreJTF.setText(user.getNombre());
+        nombreJTF.setText(user.getNombre()); // Cargar el valor actual
         add(nombreJTF, gbc);
 
         // Label y campo Apellido
         gbc.gridx = 0;
         gbc.gridy = 2;
         gbc.anchor = GridBagConstraints.LINE_END;
-        add(new JLabel("Ingrese Apellido:"), gbc);
-        
+        add(new JLabel("Apellido:"), gbc);
+
         gbc.gridx = 1;
         gbc.anchor = GridBagConstraints.LINE_START;
         apellidoJTF = new JTextField(10);
-        apellidoJTF.setText(user.getApellido());
+        apellidoJTF.setText(user.getApellido()); // Cargar el valor actual
         add(apellidoJTF, gbc);
 
         // Label y campo Teléfono
         gbc.gridx = 0;
         gbc.gridy = 3;
         gbc.anchor = GridBagConstraints.LINE_END;
-        add(new JLabel("Ingrese Teléfono:"), gbc);
-        
+        add(new JLabel("Teléfono:"), gbc);
+
         gbc.gridx = 1;
         gbc.anchor = GridBagConstraints.LINE_START;
         phoneJTF = new JTextField(10);
-        phoneJTF.setText(user.getPhone());
+        phoneJTF.setText(user.getPhone()); // Cargar el valor actual
         add(phoneJTF, gbc);
 
         // Label y campo Dirección
         gbc.gridx = 0;
         gbc.gridy = 4;
         gbc.anchor = GridBagConstraints.LINE_END;
-        add(new JLabel("Ingrese Dirección:"), gbc);
-        
+        add(new JLabel("Dirección:"), gbc);
+
         gbc.gridx = 1;
         gbc.anchor = GridBagConstraints.LINE_START;
         direccionJTF = new JTextField(10);
-        direccionJTF.setText(user.getDireccion());
+        direccionJTF.setText(user.getDireccion()); // Cargar el valor actual
         add(direccionJTF, gbc);
 
         // Botón Guardar
@@ -107,21 +102,12 @@ public class UserView extends JFrame {
         gbc.gridy = 5;
         gbc.gridwidth = 2;
         gbc.anchor = GridBagConstraints.CENTER;
-        btnguardar = new JButton("Guardar Datos");
+        btnguardar = new JButton("Guardar Cambios");
         btnguardar.setBackground(new Color(30, 144, 255));
         btnguardar.setForeground(Color.WHITE);
         btnguardar.setFocusPainted(false);
         btnguardar.setFont(new Font("Arial", Font.BOLD, 14));
         add(btnguardar, gbc);
-
-        // Botón Logout
-        gbc.gridy = 6;
-        logoutbtn = new JButton("Cerrar Sesión");
-        logoutbtn.setBackground(new Color(30, 144, 255));
-        logoutbtn.setForeground(Color.WHITE);
-        logoutbtn.setFocusPainted(false);
-        logoutbtn.setFont(new Font("Arial", Font.BOLD, 14));
-        add(logoutbtn, gbc);
 
         btnguardar.addActionListener(e -> {
             user.setNombre(nombreJTF.getText());
@@ -129,16 +115,14 @@ public class UserView extends JFrame {
             user.setPhone(phoneJTF.getText());
             user.setDireccion(direccionJTF.getText());
 
-            if (userDAO.updateUsers(user)) {  // Corregí "udpateUsers" a "updateUsers"
-                JOptionPane.showMessageDialog(this, "Perfil Actualizado Correctamente");
+            if (userDAO.updateUsers(user)) {
+                JOptionPane.showMessageDialog(this, "Usuario actualizado correctamente.");
+                userController.getAdminView().cargarUsuarios();
+                dispose(); // Cierra la ventana después de guardar
+               
             } else {
-                JOptionPane.showMessageDialog(this, "ERROR al Actualizar el Perfil");
+                JOptionPane.showMessageDialog(this, "Error al actualizar usuario.");
             }
-        });
-
-        logoutbtn.addActionListener(e -> {
-            dispose();
-            new LoginView(userController, loginController);
         });
 
         setVisible(true);

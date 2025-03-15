@@ -16,6 +16,7 @@ import javax.swing.JPasswordField;
 import javax.swing.JTextField;
 
 import com.matias.consultancy.controller.LoginController;
+import com.matias.consultancy.controller.UserController;
 import com.matias.consultancy.model.User;
 
 public class LoginView extends JFrame {
@@ -23,8 +24,15 @@ public class LoginView extends JFrame {
     private JPasswordField passwordField;
     private JButton btnLogin;
     private LoginController loginController;
+    private UserController userController;
 
-    public LoginView() {
+    public LoginView(UserController userController, LoginController loginController) {
+    this.userController = userController;
+    this.loginController = loginController;
+    initComponents();
+}
+
+    private void initComponents() {
         setTitle("Login Consultancy");
         setSize(300, 200);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -90,26 +98,24 @@ public class LoginView extends JFrame {
             public void actionPerformed(ActionEvent e) {
                 String email = emailJTF.getText();
                 String password = new String(passwordField.getPassword());
-
+        
                 User user = loginController.authenticate(email, password);
                 if (user != null) {
                     dispose(); // Cierra la ventana de login
                     if (user.getRoleId() == 1) {
-                        //new AdminView(user);
+                        new AdminView(userController).setVisible(true);
+
                     } else {
-                        //new UserView(user);
+                        new UserView(user, loginController.getUserController(), loginController).setVisible(true);
                     }
                 } else {
                     JOptionPane.showMessageDialog(LoginView.this, "Credenciales incorrectas", "Error", JOptionPane.ERROR_MESSAGE);
                 }
             }
         });
+        
 
         setVisible(true);
 
-    }
-
-    public static void main(String[] args) {
-        new LoginView();
     }
 }
