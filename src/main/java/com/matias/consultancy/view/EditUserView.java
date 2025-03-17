@@ -24,14 +24,14 @@ public class EditUserView extends JFrame {
     private UserController userController;
 
     // Constructor que recibe un usuario
-    public EditUserView(User user, UserDAO userDAO) {
+    public EditUserView(User user, UserDAO userDAO, UserController userController) {
         this.user = user; // Asignamos el usuario recibido
         this.userDAO = userDAO; // Inicializamos UserDAO
         this.userController = userController;
 
         setTitle("Editar Usuario");
         setSize(300, 300);
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         setLocationRelativeTo(null);
         setLayout(new GridBagLayout());
 
@@ -110,16 +110,39 @@ public class EditUserView extends JFrame {
         add(btnguardar, gbc);
 
         btnguardar.addActionListener(e -> {
-            user.setNombre(nombreJTF.getText());
-            user.setApellido(apellidoJTF.getText());
-            user.setPhone(phoneJTF.getText());
-            user.setDireccion(direccionJTF.getText());
+            String nombre = nombreJTF.getText().trim();
+            String apellido = apellidoJTF.getText().trim();
+            String phone = phoneJTF.getText().trim();
+            String direccion = direccionJTF.getText().trim();
 
-            if (userDAO.updateUsers(user)) {
-                JOptionPane.showMessageDialog(this, "Usuario actualizado correctamente.");
-                userController.getAdminView().cargarUsuarios();
+            // Validaciones
+            if (!esTextoValido(nombre)) {
+                JOptionPane.showMessageDialog(this, "El nombre solo puede contener letras.", "Error", JOptionPane.ERROR_MESSAGE);
+                return;
+            }
+
+            if (!esTextoValido(apellido)) {
+                JOptionPane.showMessageDialog(this, "El apellido solo puede contener letras.", "Error", JOptionPane.ERROR_MESSAGE);
+                return;
+            }
+
+            if (!esTelefonoValido(phone)) {
+                JOptionPane.showMessageDialog(this, "El teléfono debe contener exactamente 9 dígitos numéricos.", "Error", JOptionPane.ERROR_MESSAGE);
+                return;
+            }
+            user.setNombre(nombre);
+            user.setApellido(apellido);
+            user.setPhone(phone);
+            user.setDireccion(direccion);
+
+            boolean actualizado = userController.updateUsers(user);
+
+            if (actualizado) {
+                if (userController.getAdminView() != null) {
+                    userController.getAdminView().cargarUsuarios();
+                } 
+
                 dispose(); // Cierra la ventana después de guardar
-               
             } else {
                 JOptionPane.showMessageDialog(this, "Error al actualizar usuario.");
             }
@@ -127,4 +150,15 @@ public class EditUserView extends JFrame {
 
         setVisible(true);
     }
+
+    // Validar que el campo solo contenga letras y espacios
+    private boolean esTextoValido(String texto) {
+        return texto.matches("^[a-zA-ZáéíóúÁÉÍÓÚñÑ ]+$");
+    }
+
+    // Validar que el teléfono contenga exactamente 9 dígitos numéricos
+    private boolean esTelefonoValido(String phone) {
+        return phone.matches("^\\d{9}$");
+    }
+
 }

@@ -5,19 +5,15 @@ import java.awt.Font;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
-import javax.swing.JOptionPane;
 import javax.swing.JPasswordField;
 import javax.swing.JTextField;
 
 import com.matias.consultancy.controller.LoginController;
 import com.matias.consultancy.controller.UserController;
-import com.matias.consultancy.model.User;
 
 public class LoginView extends JFrame {
     private JTextField emailJTF;
@@ -93,25 +89,21 @@ public class LoginView extends JFrame {
         btnLogin.setFont(new Font("Arial", Font.BOLD, 14));
         add(btnLogin, gbc);
 
-        btnLogin.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
+        btnLogin.addActionListener(e -> {
+            System.out.println("Se presiono el boton de login");
                 String email = emailJTF.getText();
                 String password = new String(passwordField.getPassword());
-        
-                User user = loginController.authenticate(email, password);
-                if (user != null) {
-                    dispose(); // Cierra la ventana de login
-                    if (user.getRoleId() == 1) {
-                        new AdminView(userController).setVisible(true);
 
-                    } else {
-                        new UserView(user, loginController.getUserController(), loginController).setVisible(true);
-                    }
+                if (loginController == null) {
+                    System.out.println("loginController es NULL en LoginView.");
                 } else {
-                    JOptionPane.showMessageDialog(LoginView.this, "Credenciales incorrectas", "Error", JOptionPane.ERROR_MESSAGE);
+                    System.out.println("loginController existe.");
                 }
-            }
+        
+                if(userController != null){
+                    dispose();
+                    userController.loginUser(email, password);
+                } 
         });
         
 

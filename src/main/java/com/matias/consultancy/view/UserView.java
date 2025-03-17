@@ -124,23 +124,56 @@ public class UserView extends JFrame {
         add(logoutbtn, gbc);
 
         btnguardar.addActionListener(e -> {
-            user.setNombre(nombreJTF.getText());
-            user.setApellido(apellidoJTF.getText());
-            user.setPhone(phoneJTF.getText());
-            user.setDireccion(direccionJTF.getText());
 
-            if (userDAO.updateUsers(user)) {  // Corregí "udpateUsers" a "updateUsers"
-                JOptionPane.showMessageDialog(this, "Perfil Actualizado Correctamente");
-            } else {
-                JOptionPane.showMessageDialog(this, "ERROR al Actualizar el Perfil");
+            String nombre = nombreJTF.getText().trim();
+            String apellido = apellidoJTF.getText().trim();
+            String phone = phoneJTF.getText().trim();
+            String direccion = direccionJTF.getText().trim();
+
+            // Validaciones
+            if (!esTextoValido(nombre)) {
+                JOptionPane.showMessageDialog(this, "El nombre solo puede contener letras.", "Error", JOptionPane.ERROR_MESSAGE);
+                return;
             }
+
+            if (!esTextoValido(apellido)) {
+                JOptionPane.showMessageDialog(this, "El apellido solo puede contener letras.", "Error", JOptionPane.ERROR_MESSAGE);
+                return;
+            }
+
+            if (!esTelefonoValido(phone)) {
+                JOptionPane.showMessageDialog(this, "El teléfono debe contener exactamente 9 dígitos numéricos.", "Error", JOptionPane.ERROR_MESSAGE);
+                return;
+            }
+
+            user.setNombre(nombre);
+            user.setApellido(apellido);
+            user.setPhone(phone);
+            user.setDireccion(direccion);
+
+            //boolean actualizado = userController.updateUsers(user);
+            userController.updateUsers(user);
+
+            
         });
 
         logoutbtn.addActionListener(e -> {
-            dispose();
-            new LoginView(userController, loginController);
+            if (userController != null) {
+                userController.logout(this);
+            }
         });
 
         setVisible(true);
     }
+
+    // Validar que el campo solo contenga letras y espacios
+    private boolean esTextoValido(String texto) {
+        return texto.matches("^[a-zA-ZáéíóúÁÉÍÓÚñÑ ]+$");
+    }
+
+    // Validar que el telefono contenga exactamente 9 dígitos numericos
+    private boolean esTelefonoValido(String phone) {
+        return phone.matches("^\\d{9}$");
+    }
+
 }

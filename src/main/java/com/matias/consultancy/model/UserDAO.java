@@ -87,6 +87,9 @@ public class UserDAO {
             return users;
     }
 
+    //metodo para agregar usuario
+    
+
     //metodo para actualizar usuario
     public boolean updateUsers(User user) {
         String sql = "UPDATE users SET nombre=?, apellido=?, email=?, phone=?, direccion=? WHERE id=?";
@@ -113,7 +116,7 @@ public class UserDAO {
 
     //metodo para autenticar
     public User authenticateUser(String email, String password) {
-        User user = null;
+    
         String sql = "SELECT id, nombre, apellido, email, phone, direccion, password, role_id FROM users WHERE email = ? AND password = ?";
     
         try (Connection conn = DatabaseConfig.getConnection();
@@ -124,7 +127,7 @@ public class UserDAO {
             ResultSet rs = stmt.executeQuery();
     
             if (rs.next()) {
-                user = new User(
+                return new User(
                     rs.getInt("id"),
                     rs.getString("nombre"),
                     rs.getString("apellido"),
@@ -138,7 +141,7 @@ public class UserDAO {
         } catch (SQLException e) {
             e.printStackTrace();
         }
-        return user;
+        return null;
     }
     
 }

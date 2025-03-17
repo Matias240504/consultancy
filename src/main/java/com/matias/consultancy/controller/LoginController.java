@@ -8,8 +8,7 @@ public class LoginController {
     private UserController userController; // Agregamos UserController
 
     public LoginController() {
-        this.userDAO = new UserDAO();
-        this.userController = new UserController(this); // Pasamos this para conectar con LoginController
+        this.userDAO = new UserDAO();   
     }
 
     public User authenticate(String email, String password) {

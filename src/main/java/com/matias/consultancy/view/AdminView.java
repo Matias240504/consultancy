@@ -25,6 +25,8 @@ public class AdminView  extends JFrame {
     
     public AdminView(UserController userController){
         this.userController = userController;
+        this.userDAO = new UserDAO();
+        System.out.println("Admin view a sido creado correctamente");
         initComponents();
     }
 
@@ -32,15 +34,15 @@ public class AdminView  extends JFrame {
         userDAO = new UserDAO();
 
         setTitle("Panel Administrador");
-        setSize(600, 400);
+        setSize(900, 400);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLocationRelativeTo(null);
         setLayout(new BorderLayout());
         add(new JScrollPane(userTable), BorderLayout.CENTER);
 
         List<User> users = userDAO.getAllUsers();
-        String[] columnNames = {"ID", "Nombre", "Apellido", "Email", "Telefono", "Direccion"};
-        Object[][] data = new Object[users.size()][6];
+        String[] columnNames = {"ID", "Nombre", "Apellido", "Email", "Telefono", "Direccion", "Role"};
+        Object[][] data = new Object[users.size()][7];
 
         for (int i = 0; i < users.size(); i++) {
             User user = users.get(i);
@@ -50,6 +52,7 @@ public class AdminView  extends JFrame {
             data[i][3] = user.getEmail();
             data[i][4] = user.getPhone();
             data[i][5] = user.getDireccion();
+            data[i][6] = user.getRoleId();
         }
 
         userTable = new JTable(data, columnNames);
@@ -69,7 +72,7 @@ public class AdminView  extends JFrame {
                 int userId = (int) userTable.getValueAt(selectRow, 0);
                 User user = userDAO.getUserById(userId);
                 if (user != null) {
-                    new EditUserView(user, userDAO, userController).setVisible(true); // ✅ Pasar userController
+                    new EditUserView(user, userDAO, userController).setVisible(true); // Pasar userController
                 } else {
                     JOptionPane.showMessageDialog(this, "No se encontró el usuario.");
                 }
@@ -79,18 +82,20 @@ public class AdminView  extends JFrame {
         });
         
         logoutBtn.addActionListener(e -> {
-            dispose(); 
-            new LoginView(userController, loginController);
+            if (userController != null) {
+                userController.logout(this);
+            }
         });
         
 
         setVisible(true);
     }
 
-    private void cargarUsuarios() {
+    public void cargarUsuarios() {
+        System.out.println("Ejecutando metodo de cargarUsuarios");
         List<User> users = userDAO.getAllUsers();
-        String[] columnNames = {"ID", "Nombre", "Apellido", "Email", "Telefono", "Direccion"};
-        Object[][] data = new Object[users.size()][6];
+        String[] columnNames = {"id", "nombre", "apellido", "email", "phone", "direccion", "role_id"};
+        Object[][] data = new Object[users.size()][7];
     
         for (int i = 0; i < users.size(); i++) {
             User user = users.get(i);
@@ -100,9 +105,11 @@ public class AdminView  extends JFrame {
             data[i][3] = user.getEmail();
             data[i][4] = user.getPhone();
             data[i][5] = user.getDireccion();
+            data[i][6] = user.getRoleId();
         }
     
         userTable.setModel(new javax.swing.table.DefaultTableModel(data, columnNames)); 
+        userTable.repaint();
     }
     
 }
