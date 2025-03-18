@@ -101,7 +101,6 @@ public class LoginView extends JFrame {
                 }
         
                 if(userController != null){
-                    dispose();
                     userController.loginUser(email, password);
                 } 
         });

@@ -19,7 +19,7 @@ import com.matias.consultancy.model.UserDAO;
 public class EditUserView extends JFrame {
     private User user;
     private UserDAO userDAO;
-    private JTextField nombreJTF, apellidoJTF, phoneJTF, direccionJTF;
+    private JTextField nombreJTF, apellidoJTF, phoneJTF, direccionJTF, emailJTF;
     private JButton btnguardar;
     private UserController userController;
 
@@ -97,9 +97,21 @@ public class EditUserView extends JFrame {
         direccionJTF.setText(user.getDireccion()); // Cargar el valor actual
         add(direccionJTF, gbc);
 
-        // Botón Guardar
+        // Label y campo Email
         gbc.gridx = 0;
         gbc.gridy = 5;
+        gbc.anchor = GridBagConstraints.LINE_END;
+        add(new JLabel("Email:"), gbc);
+
+        gbc.gridx = 1;
+        gbc.anchor = GridBagConstraints.LINE_START;
+        emailJTF = new JTextField(10);
+        emailJTF.setText(user.getEmail()); // Cargar el valor actual
+        add(emailJTF, gbc);
+
+        // Botón Guardar
+        gbc.gridx = 0;
+        gbc.gridy = 6;
         gbc.gridwidth = 2;
         gbc.anchor = GridBagConstraints.CENTER;
         btnguardar = new JButton("Guardar Cambios");
@@ -114,6 +126,7 @@ public class EditUserView extends JFrame {
             String apellido = apellidoJTF.getText().trim();
             String phone = phoneJTF.getText().trim();
             String direccion = direccionJTF.getText().trim();
+            String email = emailJTF.getText().trim();
 
             // Validaciones
             if (!esTextoValido(nombre)) {
@@ -134,6 +147,8 @@ public class EditUserView extends JFrame {
             user.setApellido(apellido);
             user.setPhone(phone);
             user.setDireccion(direccion);
+            user.setEmail(email);
+
 
             boolean actualizado = userController.updateUsers(user);
 

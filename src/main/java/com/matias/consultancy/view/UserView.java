@@ -20,7 +20,7 @@ import com.matias.consultancy.model.UserDAO;
 public class UserView extends JFrame {
     private User user;
     private UserDAO userDAO;
-    private JTextField nombreJTF, apellidoJTF, phoneJTF, direccionJTF;
+    private JTextField nombreJTF, apellidoJTF, phoneJTF, direccionJTF, emailJTF;
     private JButton btnguardar, logoutbtn;
     private UserController userController;
     private LoginController loginController;
@@ -102,9 +102,21 @@ public class UserView extends JFrame {
         direccionJTF.setText(user.getDireccion());
         add(direccionJTF, gbc);
 
-        // Botón Guardar
+        // Label y campo Email
         gbc.gridx = 0;
         gbc.gridy = 5;
+        gbc.anchor = GridBagConstraints.LINE_END;
+        add(new JLabel("Ingrese Email:"), gbc);
+        
+        gbc.gridx = 1;
+        gbc.anchor = GridBagConstraints.LINE_START;
+        emailJTF = new JTextField(10);
+        emailJTF.setText(user.getEmail());
+        add(emailJTF, gbc);
+
+        // Botón Guardar
+        gbc.gridx = 0;
+        gbc.gridy = 6;
         gbc.gridwidth = 2;
         gbc.anchor = GridBagConstraints.CENTER;
         btnguardar = new JButton("Guardar Datos");
@@ -115,7 +127,7 @@ public class UserView extends JFrame {
         add(btnguardar, gbc);
 
         // Botón Logout
-        gbc.gridy = 6;
+        gbc.gridy = 7;
         logoutbtn = new JButton("Cerrar Sesión");
         logoutbtn.setBackground(new Color(30, 144, 255));
         logoutbtn.setForeground(Color.WHITE);
@@ -129,6 +141,7 @@ public class UserView extends JFrame {
             String apellido = apellidoJTF.getText().trim();
             String phone = phoneJTF.getText().trim();
             String direccion = direccionJTF.getText().trim();
+            String email = emailJTF.getText().trim();
 
             // Validaciones
             if (!esTextoValido(nombre)) {
@@ -150,6 +163,7 @@ public class UserView extends JFrame {
             user.setApellido(apellido);
             user.setPhone(phone);
             user.setDireccion(direccion);
+            user.setEmail(email);
 
             //boolean actualizado = userController.updateUsers(user);
             userController.updateUsers(user);
