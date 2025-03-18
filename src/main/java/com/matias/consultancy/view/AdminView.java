@@ -52,7 +52,7 @@ public class AdminView  extends JFrame {
             data[i][3] = user.getEmail();
             data[i][4] = user.getPhone();
             data[i][5] = user.getDireccion();
-            data[i][6] = user.getRoleId();
+            data[i][6] = getRoleName(user.getRoleId());
         }
 
         userTable = new JTable(data, columnNames);
@@ -94,7 +94,7 @@ public class AdminView  extends JFrame {
     public void cargarUsuarios() {
         System.out.println("Ejecutando metodo de cargarUsuarios");
         List<User> users = userDAO.getAllUsers();
-        String[] columnNames = {"id", "nombre", "apellido", "email", "phone", "direccion", "role_id"};
+        String[] columnNames = {"ID", "Nombre", "Apellido", "Email", "Telefono", "Direccion", "Role"};
         Object[][] data = new Object[users.size()][7];
     
         for (int i = 0; i < users.size(); i++) {
@@ -105,11 +105,18 @@ public class AdminView  extends JFrame {
             data[i][3] = user.getEmail();
             data[i][4] = user.getPhone();
             data[i][5] = user.getDireccion();
-            data[i][6] = user.getRoleId();
+            data[i][6] = getRoleName(user.getRoleId());
         }
     
         userTable.setModel(new javax.swing.table.DefaultTableModel(data, columnNames)); 
         userTable.repaint();
     }
-    
+
+    private String getRoleName(int roledId){
+        return switch (roledId) {
+            case 1 -> "Administrador";
+            case 2 -> "Usuario";
+            default -> "Desconocido";
+        };
+    }
 }
